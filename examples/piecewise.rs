@@ -30,7 +30,9 @@ fn main() {
   let n_points: usize = 101;
   let (lb, ub) = (0.0, 1.0);
 
-  let pt_u: Vec<f64> = (0..n_points).map(|i| lb + (ub - lb) * (i as f64) / ((n_points as f64) - 1.0)).collect();
+  let pt_u: Vec<f64> = (0..n_points)
+    .map(|i| lb + (ub - lb) * (i as f64) / ((n_points as f64) - 1.0))
+    .collect();
   let pt_f: Vec<f64> = pt_u.iter().map(|&x| f(x)).collect();
   let pt_g: Vec<f64> = pt_u.iter().map(|&z| g(z)).collect();
 
@@ -54,7 +56,7 @@ fn optimize_and_print_status(model: &mut Model) -> Result<()> {
   println!("IsMIP = {}", try!(model.get(attr::IsMIP)) != 0);
   for v in model.get_vars() {
     let vname = try!(v.get(&model, attr::VarName));
-    let x = try!(v.get(&model, attr::X));;
+    let x = try!(v.get(&model, attr::X));
     println!("{} = {}", vname, x);
   }
   println!("Obj = {}\n", try!(model.get(attr::ObjVal)));

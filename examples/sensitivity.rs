@@ -16,9 +16,7 @@ fn main() {
   model.optimize().unwrap();
 
   let status = model.status().unwrap();
-  assert!(status == Status::Optimal,
-          "Optimization ended with status {:?}",
-          status);
+  assert!(status == Status::Optimal, "Optimization ended with status {:?}", status);
 
   // store the optimal solution.
   let orig_obj = model.get(attr::ObjVal).unwrap();
@@ -32,7 +30,7 @@ fn main() {
   for (v, &orig_x) in vars.iter().zip(orig_sol.iter()) {
     let (vtype, lb, ub) = v.get_type(&model).unwrap();
 
-    if lb == 0.0 && ub == 1.0 && (vtype == 'B' || vtype == 'I') {
+    if lb == 0.0 && (ub - 1.0).abs() < f64::EPSILON && (vtype == 'B' || vtype == 'I') {
       let vname = v.get(&model, attr::VarName).unwrap();
 
       // set variable to 1 - x, where x is its value in optimal solution
@@ -63,9 +61,7 @@ fn main() {
       match model.status().unwrap() {
         Status::Optimal => {
           let objval = model.get(attr::ObjVal).unwrap();
-          println!("Objective sensitivity for variable {} is {}",
-                   vname,
-                   objval - orig_obj);
+          println!("Objective sensitivity for variable {} is {}", vname, objval - orig_obj);
         }
         _ => {
           println!("Objective sensitivity for variable {} is infinite", vname);
